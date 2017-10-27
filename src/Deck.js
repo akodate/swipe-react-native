@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   Animated,
   Dimensions,
+  LayoutAnimation,
   PanResponder,
   View,
+  UIManager,
 } from 'react-native';
 
 const SWIPE_OUT_DURATION = 250;
@@ -37,6 +39,19 @@ class Deck extends Component {
     });
 
     this.state = { index: 0, panResponder, position };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data !== this.props.data) {
+      this.setState({ index: 0 });
+    }
+  }
+
+  componentWillUpdate() {
+    UIManager.setLayoutAnimationEnabledExperimental 
+    && UIManager.setLayoutAnimationEnabledExperimental(true);
+    
+    LayoutAnimation.spring();
   }
 
   onSwipeComplete(direction) {
@@ -97,7 +112,10 @@ class Deck extends Component {
         );
       }
       return (
-        <Animated.View key={item.id} style={styles.cardStyle}>
+        <Animated.View
+          key={item.id}
+          style={[styles.cardStyle, { top: 10 * (i - this.state.index) }]}
+        >
           {this.props.renderCard(item)}
         </Animated.View>
       );
