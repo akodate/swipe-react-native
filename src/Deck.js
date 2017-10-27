@@ -8,7 +8,7 @@ import {
 
 const SWIPE_OUT_DURATION = 250;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SWIPE_THRESHOLD = 0.35 * SCREEN_WIDTH;
+const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 
 class Deck extends Component {
   static defaultProps = {
@@ -84,21 +84,24 @@ class Deck extends Component {
       if (i < this.state.index) {
         return null;
       }
-      
+
       if (i === this.state.index) {
         return (
           <Animated.View
             key={item.id}
-            style={this.getCardStyle()}
+            style={[this.getCardStyle(), styles.cardStyle]}
             {...this.state.panResponder.panHandlers}
           >
             {this.props.renderCard(item)}
           </Animated.View>
         );
       }
-
-      return this.props.renderCard(item);
-    });
+      return (
+        <Animated.View key={item.id} style={styles.cardStyle}>
+          {this.props.renderCard(item)}
+        </Animated.View>
+      );
+    }).reverse();
   }
 
   render() {
@@ -109,5 +112,12 @@ class Deck extends Component {
     );
   }
 }
+
+const styles = {
+  cardStyle: {
+    position: 'absolute',
+    width: SCREEN_WIDTH,
+  }
+};
 
 export default Deck;
